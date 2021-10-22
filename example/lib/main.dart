@@ -67,10 +67,10 @@ class _MyAppState extends State<MyApp> {
               child: Text("Add region"),
               onPressed: () {
                 Geolocation location = Geolocation(
-                    latitude: 50.853410,
-                    longitude: 3.354470,
+                    latitude: 53.337752,
+                    longitude: -6.258879,
                     radius: 50.0,
-                    id: "Kerkplein13");
+                    id: "Dublin1 - Park");
                 Geofence.addGeolocation(location, GeolocationEvent.entry)
                     .then((onValue) {
                   print("great success");
@@ -85,10 +85,10 @@ class _MyAppState extends State<MyApp> {
               child: Text("Add neighbour region"),
               onPressed: () {
                 Geolocation location = Geolocation(
-                    latitude: 50.853440,
-                    longitude: 3.354490,
+                    latitude: 53.3402202,
+                    longitude: -6.2720896,
                     radius: 50.0,
-                    id: "Kerkplein15");
+                    id: "Dublin2 - Cathedral");
                 Geofence.addGeolocation(location, GeolocationEvent.entry)
                     .then((onValue) {
                   print("great success");
