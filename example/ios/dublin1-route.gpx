@@ -11,8 +11,8 @@
       <time>2020-10-27T14:00:00Z</time>
     </wpt>
     
-    <wpt lat="37.331705" lon="-122.030237">
-        <name>Cupertino</name>
+    <wpt lat="53.349420" lon="-6.260171">
+        <name>Dublin 0 - Spire</name>
         
         <!--
          Optionally provide a time element for each waypoint. Xcode will interpolate movement
@@ -27,11 +27,6 @@
     <wpt lat="53.3402" lon="-6.2721">
       <name>Dublin 2 - Cathedral</name>
       <time>2020-10-27T14:00:20Z</time>
-    </wpt>
-    
-    <wpt lat="37.331705" lon="-122.030237">
-        <name>Cupertino</name>
-        <time>2020-10-27T14:00:30Z</time>
     </wpt>
     
 </gpx>

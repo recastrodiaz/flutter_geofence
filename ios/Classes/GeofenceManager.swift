@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import os
 
 enum GeoEvent {
 	case entry
@@ -84,11 +85,14 @@ class GeofenceManager: NSObject, CLLocationManagerDelegate {
 	}
 	
 	func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
-        let isInBackground = UIApplication.shared.applicationState == .background
-        if isInBackground {
-            print("App in Background")
-        } else {
-            print("App in Foreground. Calling Flutter callback()")
+        let appState = UIApplication.shared.applicationState
+        let isInBackground = appState  == .background || appState == .inactive
+        if #available(iOS 10.0, *) {
+            if isInBackground {
+                os_log("App in Background", log: OSLog.default, type: .info)
+            } else {
+                os_log("App in Foreground. Calling Flutter callback()", log: OSLog.default, type: .error)
+            }
         }
         
 		defer { regionsState[region] = state }
@@ -115,12 +119,16 @@ class GeofenceManager: NSObject, CLLocationManagerDelegate {
 	}
 	
 	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-	    print("didEnterRegion", region)
+        if #available(iOS 10.0, *) {
+            os_log("didEnterRegion %@", log: OSLog.default, type: .error, region)
+        }
 		requestStateUpdates()
 	}
 	
 	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-	    print("didExitRegion", region)
+        if #available(iOS 10.0, *) {
+            os_log("didExitRegion %@", log: OSLog.default, type: .error, region)
+        }
 		requestStateUpdates()
 	}
 	
@@ -199,6 +207,9 @@ class BackgroundLocationListener: NSObject, CLLocationManagerDelegate {
 	
 	func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
 		guard let coordinate = locations.last?.coordinate else { return }
+        if #available(iOS 14.0, *) {
+            os_log("didUpdateLocations %@", log: OSLog.default, type: .info, locations)
+        }
         backgroundLocationUpdated(coordinate)
 	}
 	
