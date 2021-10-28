@@ -8,6 +8,9 @@
       location = "group:kerkpleinlocation.gpx">
    </FileRef>
    <FileRef
+      location = "group:/Users/rodrigo/Libs/flutter_geofence/example/ios/dublin1-route.gpx">
+   </FileRef>
+   <FileRef
       location = "group:Runner.xcodeproj">
    </FileRef>
    <FileRef

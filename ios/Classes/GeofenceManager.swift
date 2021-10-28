@@ -84,26 +84,43 @@ class GeofenceManager: NSObject, CLLocationManagerDelegate {
 	}
 	
 	func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
+        let isInBackground = UIApplication.shared.applicationState == .background
+        if isInBackground {
+            print("App in Background")
+        } else {
+            print("App in Foreground. Calling Flutter callback()")
+        }
+        
 		defer { regionsState[region] = state }
 		if let knownState = regionsState[region], state != .unknown, state != knownState {
 			if let region = region as? CLCircularRegion {
 				let identifier = region.identifier
 				if state == .inside && region.notifyOnEntry {
 					let georegion = GeoRegion(id: identifier, radius: region.radius, latitude: region.center.latitude, longitude: region.center.longitude, events: [.entry])
-					callback(georegion)
+                    if isInBackground {
+                        self.scheduleNotification(georegion: georegion, event: GeoEvent.entry)
+                    } else {
+                        callback(georegion)
+                    }
 				} else if state == .outside && region.notifyOnExit {
 					let georegion = GeoRegion(id: identifier, radius: region.radius, latitude: region.center.latitude, longitude: region.center.longitude, events: [.exit])
-					callback(georegion)
+                    if isInBackground {
+                        self.scheduleNotification(georegion: georegion, event: GeoEvent.exit)
+                    } else {
+                        callback(georegion)
+                    }
 				}
 			}
 		}
 	}
 	
 	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+	    print("didEnterRegion", region)
 		requestStateUpdates()
 	}
 	
 	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+	    print("didExitRegion", region)
 		requestStateUpdates()
 	}
 	
@@ -142,6 +159,23 @@ class GeofenceManager: NSObject, CLLocationManagerDelegate {
 	func triggerLocationUpdate() {
         locationManager.startUpdatingLocation()
 	}
+    
+    func scheduleNotification(georegion: GeoRegion, event: GeoEvent) {
+        var title: String
+        
+        switch(event) {
+        case .entry:
+            title =  "Welcome to \(georegion.id)"
+        case .exit:
+            title = "Bye from \(georegion.id)"
+        }
+        
+        let localNotification = UILocalNotification()
+        localNotification.soundName = UILocalNotificationDefaultSoundName
+        localNotification.alertBody = title
+        localNotification.fireDate = Date()
+        UIApplication.shared.scheduleLocalNotification(localNotification)
+    }
 }
 
 class BackgroundLocationListener: NSObject, CLLocationManagerDelegate {
@@ -165,7 +199,7 @@ class BackgroundLocationListener: NSObject, CLLocationManagerDelegate {
 	
 	func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
 		guard let coordinate = locations.last?.coordinate else { return }
-		backgroundLocationUpdated(coordinate)
+        backgroundLocationUpdated(coordinate)
 	}
 	
 	func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
