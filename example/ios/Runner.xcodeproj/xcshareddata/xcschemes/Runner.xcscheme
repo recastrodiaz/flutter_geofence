@@ -60,7 +60,7 @@
          </BuildableReference>
       </BuildableProductRunnable>
       <LocationScenarioReference
-         identifier = "../kerkpleinlocation.gpx"
+         identifier = "../dublin1-route.gpx"
          referenceType = "0">
       </LocationScenarioReference>
    </LaunchAction>
