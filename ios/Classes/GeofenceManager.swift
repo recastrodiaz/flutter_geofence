@@ -109,8 +109,7 @@ class GeofenceManager: NSObject, CLLocationManagerDelegate {
 				} else if state == .outside && region.notifyOnExit {
 					let georegion = GeoRegion(id: identifier, radius: region.radius, latitude: region.center.latitude, longitude: region.center.longitude, events: [.exit])
                     if isInBackground {
-                        // No notifications for now
-                        // self.scheduleNotification(georegion: georegion, event: GeoEvent.exit)
+                        self.scheduleNotification(georegion: georegion, event: GeoEvent.exit)
                     } else {
                         callback(georegion)
                     }
