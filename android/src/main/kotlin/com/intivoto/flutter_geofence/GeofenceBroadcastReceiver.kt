@@ -60,7 +60,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
     private fun sendNotification(title: String, body: String, context: Context) {
         try {
 
-            val mBuilder = NotificationCompat.Builder(context.applicationContext, "notify_001")
+            val mBuilder = NotificationCompat.Builder(context.applicationContext, "high_importance_channel")
 
 
             val bigText = NotificationCompat.BigTextStyle()
@@ -78,10 +78,10 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             val mNotificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channelId = "your channel id"
+                val channelId = "high_importance_channel"
                 val channel = NotificationChannel(
                         channelId,
-                        "your channel name",
+                        "This channel is used for important notifications.",
                         NotificationManager.IMPORTANCE_HIGH)
                 mNotificationManager.createNotificationChannel(channel)
                 mBuilder.setChannelId(channelId)
