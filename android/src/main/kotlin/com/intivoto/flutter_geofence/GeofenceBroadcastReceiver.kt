@@ -10,6 +10,7 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
@@ -20,10 +21,12 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("DC", "Called onreceive")
+        Log.d(TAG, "Called onreceive")
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
         if (geofencingEvent.hasError()) {
-            Log.e(TAG, "something went wrong")
+            val errorMessage = GeofenceStatusCodes
+                    .getStatusCodeString(geofencingEvent.errorCode)
+            Log.e(TAG, "something went wrong: $errorMessage")
             return
         }
 
