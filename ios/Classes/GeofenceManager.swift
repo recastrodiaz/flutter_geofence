@@ -101,15 +101,15 @@ class GeofenceManager: NSObject, CLLocationManagerDelegate {
 				let identifier = region.identifier
 				if state == .inside && region.notifyOnEntry {
 					let georegion = GeoRegion(id: identifier, radius: region.radius, latitude: region.center.latitude, longitude: region.center.longitude, events: [.entry])
+					self.scheduleNotification(georegion: georegion, event: GeoEvent.entry)
                     if isInBackground {
-                        self.scheduleNotification(georegion: georegion, event: GeoEvent.entry)
                     } else {
                         callback(georegion)
                     }
 				} else if state == .outside && region.notifyOnExit {
 					let georegion = GeoRegion(id: identifier, radius: region.radius, latitude: region.center.latitude, longitude: region.center.longitude, events: [.exit])
+					self.scheduleNotification(georegion: georegion, event: GeoEvent.exit)
                     if isInBackground {
-                        self.scheduleNotification(georegion: georegion, event: GeoEvent.exit)
                     } else {
                         callback(georegion)
                     }
@@ -169,18 +169,23 @@ class GeofenceManager: NSObject, CLLocationManagerDelegate {
 	}
     
     func scheduleNotification(georegion: GeoRegion, event: GeoEvent) {
-        var title: String
+        var body: String
         
         switch(event) {
         case .entry:
-            title =  "Welcome to \(georegion.id)"
+            body =  "You are entering \(georegion.id)"
         case .exit:
-            title = "Bye from \(georegion.id)"
+            body = "You have exited \(georegion.id)"
+        }
+
+        let userDefinedBody = UserDefaults.standard.string(forKey: "flutter.flutter_geofence.notification.message.\(georegion.id)")
+        if (userDefinedBody != nil) {
+            body = userDefinedBody!
         }
         
         let localNotification = UILocalNotification()
         localNotification.soundName = UILocalNotificationDefaultSoundName
-        localNotification.alertBody = title
+        localNotification.alertBody = body
         localNotification.fireDate = Date()
         UIApplication.shared.scheduleLocalNotification(localNotification)
     }

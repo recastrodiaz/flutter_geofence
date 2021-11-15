@@ -46,9 +46,9 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 )
 
                 if (event == GeoEvent.entry) {
-                    sendNotification("ENTRY", body = "Welcome to " + region.id, context = context);
+                    sendNotification("Entering region", body = getNotificationMessageForRegionId(context, region.id, "You are entering ${region.id}"), context = context);
                 } else {
-                    sendNotification("EXIT", body = "Exit from " + region.id, context = context);
+                    sendNotification("Exit from region", body = getNotificationMessageForRegionId(context, region.id, "You have exited ${region.id}"), context = context);
                 }
 
                 callback?.invoke(region)
@@ -67,9 +67,9 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
 
             val bigText = NotificationCompat.BigTextStyle()
-            bigText.bigText(title)
-            bigText.setBigContentTitle(body)
-            bigText.setSummaryText(body)
+            bigText.bigText(body)
+            bigText.setBigContentTitle(title)
+            // bigText.setSummaryText(body)
 
 
             mBuilder.setSmallIcon(R.drawable.common_full_open_on_phone)
@@ -94,5 +94,12 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         } catch (ex: Exception) {
             Log.e(TAG, ex.toString())
         }
+    }
+
+    private fun getNotificationMessageForRegionId(context: Context, id: String, defaultMessage: String): String {
+        val preferences = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+        val message = preferences.getString("flutter.flutter_geofence.notification.message.$id", defaultMessage)!!
+        Log.i(TAG, "Reading flutter_geofence.notification.message.$id. :: $message")
+        return message
     }
 }
