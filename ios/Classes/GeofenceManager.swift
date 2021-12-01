@@ -176,6 +176,7 @@ class GeofenceManager: NSObject, CLLocationManagerDelegate {
             body =  "You are entering \(georegion.id)"
         case .exit:
             body = "You have exited \(georegion.id)"
+            return
         }
 
         let userDefinedBody = UserDefaults.standard.string(forKey: "flutter.flutter_geofence.notification.message.\(georegion.id)")

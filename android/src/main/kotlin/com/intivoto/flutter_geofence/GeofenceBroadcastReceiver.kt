@@ -6,6 +6,8 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -46,9 +48,9 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 )
 
                 if (event == GeoEvent.entry) {
-                    sendNotification("Entering region", body = getNotificationMessageForRegionId(context, region.id, "You are entering ${region.id}"), context = context);
+                    sendNotification("Entering boundary", body = getNotificationMessageForRegionId(context, region.id, "You are entering ${region.id}"), context = context);
                 } else {
-                    sendNotification("Exit from region", body = getNotificationMessageForRegionId(context, region.id, "You have exited ${region.id}"), context = context);
+                    // sendNotification("Exit from boundary", body = getNotificationMessageForRegionId(context, region.id, "You have exited ${region.id}"), context = context);
                 }
 
                 callback?.invoke(region)
@@ -63,6 +65,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
     private fun sendNotification(title: String, body: String, context: Context) {
         try {
 
+            val alarmSound: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             val mBuilder = NotificationCompat.Builder(context.applicationContext, "high_importance_channel")
 
 
@@ -77,6 +80,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             mBuilder.setContentText(body)
             mBuilder.priority = Notification.PRIORITY_MAX
             mBuilder.setStyle(bigText)
+            mBuilder.setSound(alarmSound);
 
             val mNotificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
